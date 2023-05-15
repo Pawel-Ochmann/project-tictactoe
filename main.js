@@ -6,11 +6,13 @@
   }
   function addPlayerButtonHandler() {
     const sign = this.dataset.sign;
+    const box = document.querySelector(`div[data-sign='${sign}']`);
     const name = document.querySelector(`input[data-sign='${sign}']`).value;
     if (player1.sign) {
       player2 = playerCreate(sign, name);
     } else player1 = playerCreate(sign, name);
-    console.log(player1, player2);
+    box.innerHTML = name;
+    box.classList.add('playerCreated');
   }
 
   const addPlayerButtons = document.querySelectorAll('.addPlayer');

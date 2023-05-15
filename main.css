@@ -12,7 +12,7 @@ body {
 main {
   width: 30rem;
   height: 30rem;
-  border: .5rem solid black;
+  border: 0.5rem solid black;
 }
 .board {
   display: grid;
@@ -30,4 +30,11 @@ main {
   font-size: 8rem;
   font-weight: bold;
   aspect-ratio: 1;
+}
+
+.playerCreated {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: end;
+  padding:0 2rem;
 }
