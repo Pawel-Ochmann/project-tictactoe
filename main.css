@@ -36,5 +36,9 @@ main {
   font-size: 2rem;
   font-weight: bold;
   text-align: end;
-  padding:0 2rem;
+  padding: 0 2rem;
+}
+
+.itsYourTurn {
+  border: 0.3rem solid green;
 }
