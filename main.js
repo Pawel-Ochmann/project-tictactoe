@@ -9,6 +9,11 @@ const mainModule = (function () {
     return { sign, name, turn };
   }
 
+  function addFirstBorder() {
+    const fieldset = document.querySelector('#x');
+    fieldset.classList.add('itsYourTurn');
+  }
+
   function addPlayerButtonHandler() {
     const sign = this.dataset.sign;
     const box = document.querySelector(`div[data-sign='${sign}']`);
@@ -18,6 +23,9 @@ const mainModule = (function () {
     } else player1 = playerCreate(sign, name);
     box.innerHTML = name;
     box.classList.add('playerCreated');
+    if (sign === 'x') {
+      addFirstBorder();
+    }
   }
 
   const addPlayerButtons = document.querySelectorAll('.addPlayer');
@@ -46,6 +54,19 @@ const mainModule = (function () {
 
 const gameModule = (function () {
   const fields = Array.from(document.querySelectorAll('.field'));
+  const wins = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+    [1, 4, 7],
+    [2, 8, 5],
+    [3, 6, 9],
+    [3, 5, 7],
+    [1, 5, 9],
+  ];
+  function checkWin() {
+    
+  }
 
   function returnSign() {
     let sign = '';
@@ -60,10 +81,13 @@ const gameModule = (function () {
 
   function makeMove() {
     this.innerHTML = returnSign();
+    this.classList.remove('fieldActive');
+    this.removeEventListener('click', makeMove);
     mainModule.toggleTurn();
   }
 
   for (field of fields) {
     field.addEventListener('click', makeMove);
+    field.classList.add('fieldActive');
   }
 })();

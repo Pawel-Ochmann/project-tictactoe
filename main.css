@@ -30,6 +30,7 @@ main {
   font-size: 8rem;
   font-weight: bold;
   aspect-ratio: 1;
+  transition: .3s;
 }
 
 .playerCreated {
@@ -41,4 +42,8 @@ main {
 
 .itsYourTurn {
   border: 0.3rem solid green;
+}
+
+.fieldActive:hover {
+  background-color: rgb(175, 166, 166);
 }
