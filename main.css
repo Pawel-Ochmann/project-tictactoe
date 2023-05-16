@@ -47,3 +47,12 @@ main {
 .fieldActive:hover {
   background-color: rgb(175, 166, 166);
 }
+
+.finalBoard {
+  font-size: 5rem;
+  font-weight: bold;
+  text-align: center;
+  padding-top: 2rem;
+  background-color: white;
+  display: flex;
+}

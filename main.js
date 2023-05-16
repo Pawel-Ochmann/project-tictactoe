@@ -55,17 +55,34 @@ const mainModule = (function () {
 const gameModule = (function () {
   const fields = Array.from(document.querySelectorAll('.field'));
   const wins = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9],
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
     [1, 4, 7],
-    [2, 8, 5],
-    [3, 6, 9],
-    [3, 5, 7],
-    [1, 5, 9],
+    [2, 5, 8],
+    [2, 4, 6],
+    [0, 4, 8],
   ];
   function checkWin() {
-    
+    let win = false;
+    const winCondition = [returnSign(), returnSign(), returnSign()];
+    const values = fields.map((e) => {
+      return e.innerHTML;
+    });
+    for (array of wins) {
+      const line = [values[array[0]], values[array[1]], values[array[2]]];
+      if (line.toString() === winCondition.toString()) {
+        win = true;
+      }
+    }
+    return win;
+  }
+
+  function displayWinner() {
+    const box = document.querySelector('.board');
+    box.classList.add('finalBoard');
+    box.innerHTML = `The winner is ${returnSign()} player!`;
   }
 
   function returnSign() {
@@ -83,7 +100,10 @@ const gameModule = (function () {
     this.innerHTML = returnSign();
     this.classList.remove('fieldActive');
     this.removeEventListener('click', makeMove);
-    mainModule.toggleTurn();
+
+    if (checkWin() === true) {
+      displayWinner();
+    } else mainModule.toggleTurn();
   }
 
   for (field of fields) {
