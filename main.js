@@ -32,7 +32,7 @@ const mainModule = (function () {
     const name = document.querySelector(`input[data-sign='${sign}']`).value;
     const level = document.querySelector('select').value;
     if (player1.sign) {
-      player2 = playerCreate(sign, name);
+      player2 = playerCreate(sign, name, level);
     } else player1 = playerCreate(sign, name, level);
     box.innerHTML = name;
     box.classList.add('playerCreated');
@@ -68,15 +68,21 @@ const mainModule = (function () {
 })();
 
 const aiModule = (function () {
-  function getRandomField(length) {
-    return Math.floor(Math.random() * length);
+  function getRandomField(emptyFields) {
+    const random = Math.floor(Math.random() * emptyFields.length);
+    return emptyFields[random];
   }
 
   function levelEasy() {
-    const emptyFields = gameModule.fields.filter((e) => {
-      return e.innerHTML === '';
-    });
-    return getRandomField(emptyFields.length);
+    const fields = gameModule.fields;
+    const emptyFields = [];
+    for (field of fields) {
+      if (field.innerHTML === '') {
+        emptyFields.push(fields.indexOf(field));
+      }
+    }
+
+    return getRandomField(emptyFields);
   }
   function makeMove() {
     const field = gameModule.fields[levelEasy()];
