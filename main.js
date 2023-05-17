@@ -1,12 +1,12 @@
 const mainModule = (function () {
   let player1 = {};
   let player2 = {};
-  function playerCreate(sign, name) {
+  function playerCreate(sign, name, level) {
     let turn = true;
     if (sign === 'o') {
       turn = false;
     }
-    return { sign, name, turn };
+    return { sign, name, turn, level };
   }
 
   function addFirstBorder() {
@@ -18,9 +18,10 @@ const mainModule = (function () {
     const sign = this.dataset.sign;
     const box = document.querySelector(`div[data-sign='${sign}']`);
     const name = document.querySelector(`input[data-sign='${sign}']`).value;
+    const level = document.querySelector('select').value;
     if (player1.sign) {
       player2 = playerCreate(sign, name);
-    } else player1 = playerCreate(sign, name);
+    } else player1 = playerCreate(sign, name, level);
     box.innerHTML = name;
     box.classList.add('playerCreated');
     if (sign === 'x') {
@@ -40,6 +41,7 @@ const mainModule = (function () {
     fieldset.forEach((f) => {
       f.classList.toggle('itsYourTurn');
     });
+    console.log(player1);
   }
 
   function players() {
@@ -51,6 +53,9 @@ const mainModule = (function () {
     toggleTurn,
   };
 })();
+
+
+
 
 const gameModule = (function () {
   const fields = Array.from(document.querySelectorAll('.field'));

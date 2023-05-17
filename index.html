@@ -17,8 +17,12 @@
         <div data-sign="x">
           <form action="" class="playerOne"></form>
           <label for=""
-            >Players name<input type="text" data-sign="x" required
+            >Players name: <input type="text" data-sign="x" required
           /></label>
+          <select name="" id="">
+            <option value="human" checked>Human</option>
+            <option value="easy">Computer - easy</option>
+          </select>
           <button class="addPlayer" data-sign="x">Add</button>
         </div>
       </fieldset>
@@ -27,11 +31,15 @@
         <div data-sign="o">
           <form action="" class="playerTwo"></form>
           <label for=""
-            >Players name<input type="text" data-sign="o" required
+            >Players name: <input type="text" data-sign="o" required
           /></label>
+          <select name="" id="">
+            <option value="human" checked>Human</option>
+            <option value="easy">Computer - easy</option>
+          </select>
           <button class="addPlayer" data-sign="o">Add</button>
         </div>
-      </fieldset data-sign='o'>
+      </fieldset>
     </section>
     <main>
       <div class="board">
