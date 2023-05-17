@@ -1,6 +1,18 @@
 const mainModule = (function () {
   let player1 = {};
   let player2 = {};
+
+  function checkForAi() {
+    const bothPlayers = players();
+    if (player1.name && player2.name) {
+      for (player of bothPlayers) {
+        if (player.turn === true && player.level === 'easy') {
+          return aiModule.makeMove();
+        }
+      }
+    }
+  }
+
   function playerCreate(sign, name, level) {
     let turn = true;
     if (sign === 'o') {
@@ -27,6 +39,7 @@ const mainModule = (function () {
     if (sign === 'x') {
       addFirstBorder();
     }
+    checkForAi();
   }
 
   const addPlayerButtons = document.querySelectorAll('.addPlayer');
@@ -41,7 +54,7 @@ const mainModule = (function () {
     fieldset.forEach((f) => {
       f.classList.toggle('itsYourTurn');
     });
-    console.log(player1);
+    checkForAi();
   }
 
   function players() {
@@ -54,8 +67,23 @@ const mainModule = (function () {
   };
 })();
 
+const aiModule = (function () {
+  function getRandomField(length) {
+    return Math.floor(Math.random() * length);
+  }
 
-
+  function levelEasy() {
+    const emptyFields = gameModule.fields.filter((e) => {
+      return e.innerHTML === '';
+    });
+    return getRandomField(emptyFields.length);
+  }
+  function makeMove() {
+    const field = gameModule.fields[levelEasy()];
+    gameModule.makeMove.call(field);
+  }
+  return { makeMove };
+})();
 
 const gameModule = (function () {
   const fields = Array.from(document.querySelectorAll('.field'));
@@ -115,4 +143,12 @@ const gameModule = (function () {
     field.addEventListener('click', makeMove);
     field.classList.add('fieldActive');
   }
+
+  return {
+    fields,
+    returnSign,
+    checkWin,
+    displayWinner,
+    makeMove,
+  };
 })();
