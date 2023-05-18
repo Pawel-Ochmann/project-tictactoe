@@ -39,7 +39,7 @@ const mainModule = (function () {
     if (sign === 'x') {
       addFirstBorder();
     }
-    checkForAi();
+    setTimeout(checkForAi, 1000);
   }
 
   const addPlayerButtons = document.querySelectorAll('.addPlayer');
@@ -54,7 +54,7 @@ const mainModule = (function () {
     fieldset.forEach((f) => {
       f.classList.toggle('itsYourTurn');
     });
-    checkForAi();
+    setTimeout(checkForAi, 1000);
   }
 
   function players() {
@@ -68,12 +68,7 @@ const mainModule = (function () {
 })();
 
 const aiModule = (function () {
-  function getRandomField(emptyFields) {
-    const random = Math.floor(Math.random() * emptyFields.length);
-    return emptyFields[random];
-  }
-
-  function levelEasy() {
+  function getEmptyFields() {
     const fields = gameModule.fields;
     const emptyFields = [];
     for (field of fields) {
@@ -81,9 +76,32 @@ const aiModule = (function () {
         emptyFields.push(fields.indexOf(field));
       }
     }
-
-    return getRandomField(emptyFields);
+    return emptyFields;
   }
+
+  function getRandomField(emptyFields) {
+    const random = Math.floor(Math.random() * emptyFields.length);
+    return emptyFields[random];
+  }
+
+  function levelEasy() {
+    return getRandomField(getEmptyFields());
+  }
+  function levelHard(sign) {
+    const emptyFields = getEmptyFields();
+    function checkLine(array) {
+      const double = array.map((e) => {
+        if (e.innerHTML !== '') return e.innerHTML;
+      });
+    }
+    if (double.toString() === sign + sign) return true;
+    else return false;
+  }
+  function checkForWin() {
+    for (win of gameModule.wins) {
+    }
+  }
+
   function makeMove() {
     const field = gameModule.fields[levelEasy()];
     gameModule.makeMove.call(field);
@@ -135,6 +153,17 @@ const gameModule = (function () {
     return sign;
   }
 
+  function returnSignEnemy() {
+    let sign = '';
+    const players = mainModule.players();
+    for (player of players) {
+      if (player.turn === false) {
+        sign = player.sign;
+      }
+    }
+    return sign;
+  }
+
   function makeMove() {
     this.innerHTML = returnSign();
     this.classList.remove('fieldActive');
@@ -153,8 +182,10 @@ const gameModule = (function () {
   return {
     fields,
     returnSign,
+    returnSignEnemy,
     checkWin,
     displayWinner,
     makeMove,
+    wins,
   };
 })();
