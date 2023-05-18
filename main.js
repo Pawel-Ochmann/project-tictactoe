@@ -73,7 +73,7 @@ const aiModule = (function () {
   function getEmptyFields() {
     const fields = gameModule.fields;
     const emptyFields = [];
-    for (field of fields) {
+    for (const field of fields) {
       if (field.innerHTML === '') {
         emptyFields.push(fields.indexOf(field));
       }
@@ -91,41 +91,68 @@ const aiModule = (function () {
   }
 
   function checkLine(array, sign) {
-    let empty = null;
-    const double = array.map((e) => {
-      if (e.innerHTML === '') {
-        empty = e;
-      }
-      if (e.innerHTML !== '') return e.innerHTML;
+    let testString = '';
+    const double = array.filter((e) => {
+      return e.innerHTML !== '';
     });
-    if (double.toString() === sign + sign) return empty;
+    if (double.length === 2) {
+      testString = double[0].innerHTML + double[1].innerHTML;
+    }
+
+    if (testString === sign + sign) return true;
     else return false;
   }
 
   function levelHard() {
-    const emptyFields = getEmptyFields();
+    // const emptyFields = getEmptyFields();
+    let field = false;
     const lines = [];
-    for (array of gameModule.wins) {
+    for (const array of gameModule.wins) {
       const line = [
-        gameModule[array[0]],
-        gameModule[array[1]],
-        gameModule[array[2]],
+        gameModule.fields[array[0]],
+        gameModule.fields[array[1]],
+        gameModule.fields[array[2]],
       ];
       lines.push(line);
     }
-    if (checkLine(lines, gameModule.returnSign()) !== false) {
-      return checkLine(lines, gameModule.returnSign());
+
+    for (const line of lines) {
+      if (checkLine(line, gameModule.returnSign())) {
+        if (field) {
+          break;
+        }
+        for (element of line) {
+          if (element.innerHTML === '') {
+            field = element;
+            break;
+          }
+        }
+      }
     }
-    if (checkLine(lines, gameModule.returnSignEnemy()) !== false) {
-      return checkLine(lines, gameModule.returnSignEnemy());
-    } else levelEasy();
+    for (const line of lines) {
+      if (checkLine(line, gameModule.returnSignEnemy())) {
+        if (field) {
+          break;
+        }
+        for (element of line) {
+          if (element.innerHTML === '') {
+            field = element;
+            break;
+          }
+        }
+      }
+    }
+    console.log(field);
+    if (field) {
+      return field;
+    } else return gameModule.fields[levelEasy()];
   }
   function makeMove() {
     const field = gameModule.fields[levelEasy()];
     gameModule.makeMove.call(field);
   }
   function makeMoveHard() {
-    const field = gameModule.fields[levelHard()];
+    const field = levelHard();
     gameModule.makeMove.call(field);
   }
   return { makeMove, makeMoveHard };
@@ -170,6 +197,7 @@ const gameModule = (function () {
     for (player of players) {
       if (player.turn === true) {
         sign = player.sign;
+        break;
       }
     }
     return sign;
@@ -181,6 +209,7 @@ const gameModule = (function () {
     for (player of players) {
       if (player.turn === false) {
         sign = player.sign;
+        break;
       }
     }
     return sign;
