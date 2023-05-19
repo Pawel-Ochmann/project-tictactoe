@@ -105,6 +105,44 @@ const aiModule = (function () {
     else return false;
   }
 
+  function oneMark(line) {
+    let mark = 0;
+    for (const field of line) {
+      if (field.innerHTML === returnSignEnemy()) {
+        mark = 0;
+        break;
+      } else if (field.innerHTML === gameModule.returnSign()) {
+        mark++;
+      }
+    }
+    if (mark === 1) {
+      return line.filter((e) => {
+        return e.innerHTML != returnSign();
+      });
+    } else return false;
+  }
+
+  function checkTwoLines(lines) {
+    const field = false;
+    const markOnLine = [];
+    for (const line of lines) {
+      if (oneMark(line)) {
+        markOnLine.push(oneMark());
+      }
+    }
+    const doubleField = [];
+    for (const array of markOnLine) {
+      if (doubleField.includes(array[0])) {
+        field = array[0];
+        break;
+      } else if (doubleField.includes(array[0])) {
+        field = array[1];
+        break;
+      } else doubleField.push(array[0], array[1]);
+    }
+    return field;
+  }
+
   function levelAverage() {
     let field = false;
     const lines = [];
@@ -146,6 +184,22 @@ const aiModule = (function () {
     return field;
   }
 
+  function levelHard() {
+    let field = false;
+    const lines = [];
+    for (const array of gameModule.wins) {
+      const line = [
+        gameModule.fields[array[0]],
+        gameModule.fields[array[1]],
+        gameModule.fields[array[2]],
+      ];
+      lines.push(line);
+    }
+
+    field = checkTwoLines(lines);
+    return field;
+  }
+
   function makeMove() {
     const field = gameModule.fields[levelEasy()];
     gameModule.makeMove.call(field);
@@ -161,8 +215,55 @@ const aiModule = (function () {
     return;
   }
 
+  function checkEmpty(...args) {
+    const field = false;
+    for (const arg of args) {
+      if (arg.innerHTML === '') field = arg;
+      break;
+    }
+    return field;
+  }
+  function checkFull(...args) {
+    const full = false;
+    for (const arg of args) {
+      if (arg.innerHTML !== '') field = true;
+      break;
+    }
+    return full;
+  }
+
   function makeMoveHard() {
+    const fields = gameModule.fields;
     const emptyFields = getEmptyFields();
+    if (levelAverage()) {
+      return gameModule.makeMove.call(levelAverage());
+      //round 1 player X
+    } else if (emptyFields.length === 9) {
+      return gameModule.makeMove.call(fields[0]);
+      //round 3 X
+    } else if (emptyFields.length === 7) {
+      if (checkFull(fields[1], fields[3], fields[5], fields[7]))
+        return gameModule.makeMove.call(fields[4]);
+      else if (checkFull(fields[2], fields[6], fields[8])) {
+        return gameModule.makeMove.call(checkEmpty(fields[2], fields[6]));
+      } else if (checkFull(fields[4])) {
+        return gameModule.makeMove.call(checkEmpty(fields[8]));
+      }
+      // round 2 player O
+      else if (emptyFields.length === 8) {
+        if (!checkFull(fields[4])) {
+          return gameModule.makeMove.call(fields[4]);
+        } else if (checkFull(fields[4])) {
+          return gameModule.makeMove.call(fields[0]);
+        }
+      }
+      // round 4 player o
+      else if (emptyFields.length === 6) {
+        if (!checkEmpty(fields[0], fields[4], fields[8])) {
+          return gameModule.makeMove.call(fields[1]);
+        }
+      }
+    } else return gameModule.makeMove.call(levelHard());
   }
   return { makeMove, makeMoveAverage, makeMoveHard };
 })();
