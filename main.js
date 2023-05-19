@@ -8,6 +8,8 @@ const mainModule = (function () {
       for (player of bothPlayers) {
         if (player.turn === true && player.level === 'easy') {
           return aiModule.makeMove();
+        } else if (player.turn === true && player.level === 'average') {
+          return aiModule.makeMoveAverage();
         } else if (player.turn === true && player.level === 'hard') {
           return aiModule.makeMoveHard();
         }
@@ -103,8 +105,7 @@ const aiModule = (function () {
     else return false;
   }
 
-  function levelHard() {
-    // const emptyFields = getEmptyFields();
+  function levelAverage() {
     let field = false;
     const lines = [];
     for (const array of gameModule.wins) {
@@ -142,20 +143,28 @@ const aiModule = (function () {
         }
       }
     }
-    console.log(field);
-    if (field) {
-      return field;
-    } else return gameModule.fields[levelEasy()];
+    return field;
   }
+
   function makeMove() {
     const field = gameModule.fields[levelEasy()];
     gameModule.makeMove.call(field);
   }
-  function makeMoveHard() {
-    const field = levelHard();
+
+  function makeMoveAverage() {
+    let field = levelAverage();
+    if (field) {
+      gameModule.makeMove.call(field);
+      return;
+    } else field = gameModule.fields[levelEasy()];
     gameModule.makeMove.call(field);
+    return;
   }
-  return { makeMove, makeMoveHard };
+
+  function makeMoveHard() {
+    const emptyFields = getEmptyFields();
+  }
+  return { makeMove, makeMoveAverage, makeMoveHard };
 })();
 
 const gameModule = (function () {
