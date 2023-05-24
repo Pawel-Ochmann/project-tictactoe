@@ -2,6 +2,25 @@ const mainModule = (function () {
   let player1 = {};
   let player2 = {};
 
+  const addPlayerButtons = document.querySelectorAll('.addPlayer');
+  addPlayerButtons.forEach((button) => {
+    button.addEventListener('click', addPlayerButtonHandler);
+  });
+  const inputNames = document.querySelectorAll('input[type=text');
+  inputNames.forEach((e) => {
+    e.addEventListener('focusout', enableButtons);
+  });
+
+  function enableButtons() {
+    const sign = this.dataset.sign;
+    const button = document.querySelector(`button[data-sign='${sign}']`);
+    if (this.value !== '') {
+      button.disabled = false;
+    } else {
+      button.disabled = true;
+    }
+  }
+
   function checkForAi() {
     const bothPlayers = players();
     if (player1.name && player2.name) {
@@ -45,11 +64,6 @@ const mainModule = (function () {
     }
     setTimeout(checkForAi, 1000);
   }
-
-  const addPlayerButtons = document.querySelectorAll('.addPlayer');
-  addPlayerButtons.forEach((button) => {
-    button.addEventListener('click', addPlayerButtonHandler);
-  });
 
   function toggleTurn() {
     player1.turn = !player1.turn;
@@ -316,7 +330,7 @@ const gameModule = (function () {
   function displayWinner() {
     const box = document.querySelector('.board');
     box.classList.add('finalBoard');
-    box.innerHTML = `The winner is ${returnSign()} player!`;
+    box.innerHTML = `The winner is ${returnSign()} player! <button class="displayWinner">Clear table</button class="displayWinner"><button>Reset</button>`;
   }
 
   function returnSign() {
