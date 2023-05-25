@@ -8,8 +8,9 @@ const mainModule = (function () {
   });
   const inputNames = document.querySelectorAll('input[type=text');
   inputNames.forEach((e) => {
-    e.addEventListener('focusout', enableButtons);
+    e.addEventListener('input', enableButtons);
   });
+  const buttonStart = document.querySelector('body>button');
 
   function enableButtons() {
     const sign = this.dataset.sign;
@@ -20,6 +21,8 @@ const mainModule = (function () {
       button.disabled = true;
     }
   }
+
+  
 
   function checkForAi() {
     const bothPlayers = players();

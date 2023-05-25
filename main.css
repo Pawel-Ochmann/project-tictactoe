@@ -29,7 +29,7 @@ header {
 }
 fieldset {
   background-color: rgb(100, 45, 12);
-  width: 30rem;
+  width: 28rem;
 }
 fieldset > div {
   gap: 0.5rem;
@@ -100,4 +100,17 @@ input {
   background-color: white;
   display: flex;
   flex-direction: column;
+}
+
+body > button {
+  padding: .3rem 1rem;
+  font-weight: bold;
+  font-size: 1.5rem;
+  border:6px ridge rgb(100, 45, 12);
+  background-color: rgb(182, 170, 170);
+  transition: .3s;
+}
+
+body>button:hover:not([disabled]) {
+background-color: rgb(158, 74, 26);
 }
