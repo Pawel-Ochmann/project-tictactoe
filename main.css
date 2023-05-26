@@ -64,6 +64,8 @@ input {
   grid-template-rows: repeat(3, 1fr);
   gap: 0.5rem;
   background-color: black;
+  color:black;
+  position: relative;
 }
 
 .field {
@@ -108,9 +110,10 @@ body > button {
   font-size: 1.5rem;
   border:6px ridge rgb(100, 45, 12);
   background-color: rgb(182, 170, 170);
-  transition: .3s;
+  transition: .5s;
 }
 
 body>button:hover:not([disabled]) {
-background-color: rgb(158, 74, 26);
+background-color: rgb(255, 161, 53);
 }
+

@@ -11,6 +11,7 @@ const mainModule = (function () {
     e.addEventListener('input', enableButtons);
   });
   const buttonStart = document.querySelector('body>button');
+  buttonStart.addEventListener('click', startGame);
 
   function enableButtons() {
     const sign = this.dataset.sign;
@@ -22,7 +23,38 @@ const mainModule = (function () {
     }
   }
 
-  
+  function enableStartButton() {
+    const bothPlayers = players();
+    if (player1.name && player2.name) {
+      buttonStart.disabled = false;
+    }
+  }
+
+  function startGame() {
+    this.innerHTML = 'Replay!';
+    this.removeEventListener('click', startGame);
+    this.addEventListener('click', replay);
+  }
+
+  function replay() {
+    const fields = gameModule.fields;
+    const players = [player1, player2];
+    for (const field of fields) {
+      field.innerHTML = '';
+    }
+    for (const player of players) {
+      if (player.sign === 'x') {
+        player.turn === true;
+      } else player.turn === false;
+    }
+    const fieldset = document.querySelector('#o');
+    fieldset.classList.remove('itsYourTurn');
+    addFirstBorder();
+    const board = document.querySelector('.board');
+    board.innerHTML = '';
+    
+    setTimeout(checkForAi, 1000);
+  }
 
   function checkForAi() {
     const bothPlayers = players();
@@ -65,7 +97,7 @@ const mainModule = (function () {
     if (sign === 'x') {
       addFirstBorder();
     }
-    setTimeout(checkForAi, 1000);
+    enableStartButton();
   }
 
   function toggleTurn() {
@@ -85,6 +117,7 @@ const mainModule = (function () {
   return {
     players,
     toggleTurn,
+    winnerBoard,
   };
 })();
 
@@ -333,7 +366,7 @@ const gameModule = (function () {
   function displayWinner() {
     const box = document.querySelector('.board');
     box.classList.add('finalBoard');
-    box.innerHTML = `The winner is ${returnSign()} player! <button class="displayWinner">Clear table</button class="displayWinner"><button>Reset</button>`;
+    box.innerHTML = `The winner is ${returnSign()} player!`;
   }
 
   function returnSign() {
