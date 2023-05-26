@@ -24,7 +24,6 @@ const mainModule = (function () {
   }
 
   function enableStartButton() {
-    const bothPlayers = players();
     if (player1.name && player2.name) {
       buttonStart.disabled = false;
     }
@@ -34,6 +33,8 @@ const mainModule = (function () {
     this.innerHTML = 'Replay!';
     this.removeEventListener('click', startGame);
     this.addEventListener('click', replay);
+
+    checkForAi();
   }
 
   function replay() {
@@ -52,11 +53,20 @@ const mainModule = (function () {
     addFirstBorder();
     const board = document.querySelector('.board');
     board.innerHTML = '';
-    
+    for (let i = 0; i < 9; i++) {
+      const field = document.createElement('div');
+      field.classList.add('field');
+      board.appendChild(field);
+    }
+
     setTimeout(checkForAi, 1000);
   }
 
   function checkForAi() {
+    const fields = gameModule.fields;
+    if (fields.length === 0) {
+      gameModule.displayDraw();
+    }
     const bothPlayers = players();
     if (player1.name && player2.name) {
       for (player of bothPlayers) {
@@ -117,7 +127,6 @@ const mainModule = (function () {
   return {
     players,
     toggleTurn,
-    winnerBoard,
   };
 })();
 
@@ -369,6 +378,12 @@ const gameModule = (function () {
     box.innerHTML = `The winner is ${returnSign()} player!`;
   }
 
+  function displayDraw() {
+    const box = document.querySelector('.board');
+    box.classList.add('finalBoard');
+    box.innerHTML = `This is a draw!`;
+  }
+
   function returnSign() {
     let sign = '';
     const players = mainModule.players();
@@ -416,5 +431,6 @@ const gameModule = (function () {
     displayWinner,
     makeMove,
     wins,
+    displayDraw,
   };
 })();
