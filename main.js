@@ -58,6 +58,7 @@ const mainModule = (function () {
     for (let i = 0; i < 9; i++) {
       const field = document.createElement('div');
       field.classList.add('field', 'fieldActive');
+      field.addEventListener('click', gameModule.makeMove);
       board.appendChild(field);
     }
 
@@ -417,6 +418,12 @@ const gameModule = (function () {
   }
 
   function makeMove() {
+
+    // const players = mainModule.players();
+    // for (const player of players) {
+    //   if (player.turn === true && player.level !== 'human') return;
+    // }
+    
     this.innerHTML = returnSign();
     this.classList.remove('fieldActive');
     this.removeEventListener('click', makeMove);
