@@ -30,6 +30,11 @@ const mainModule = (function () {
   }
 
   function startGame() {
+    const fields = gameModule.getFields();
+    for (const field of fields) {
+      field.addEventListener('click', gameModule.makeMove);
+      field.classList.add('fieldActive');
+    }
     this.innerHTML = 'Replay!';
     this.removeEventListener('click', startGame);
     this.addEventListener('click', replay);
@@ -38,11 +43,7 @@ const mainModule = (function () {
   }
 
   function replay() {
-    const fields = gameModule.fields;
     const players = [player1, player2];
-    for (const field of fields) {
-      field.innerHTML = '';
-    }
     for (const player of players) {
       if (player.sign === 'x') {
         player.turn === true;
@@ -52,10 +53,11 @@ const mainModule = (function () {
     fieldset.classList.remove('itsYourTurn');
     addFirstBorder();
     const board = document.querySelector('.board');
+    board.classList.remove('finalBoard');
     board.innerHTML = '';
     for (let i = 0; i < 9; i++) {
       const field = document.createElement('div');
-      field.classList.add('field');
+      field.classList.add('field', 'fieldActive');
       board.appendChild(field);
     }
 
@@ -63,9 +65,10 @@ const mainModule = (function () {
   }
 
   function checkForAi() {
-    const fields = gameModule.fields;
+    const fields = aiModule.getEmptyFields();
     if (fields.length === 0) {
       gameModule.displayDraw();
+      return;
     }
     const bothPlayers = players();
     if (player1.name && player2.name) {
@@ -132,7 +135,7 @@ const mainModule = (function () {
 
 const aiModule = (function () {
   function getEmptyFields() {
-    const fields = gameModule.fields;
+    const fields = gameModule.getFields();
     const emptyFields = [];
     for (const field of fields) {
       if (field.innerHTML === '') {
@@ -207,9 +210,9 @@ const aiModule = (function () {
     const lines = [];
     for (const array of gameModule.wins) {
       const line = [
-        gameModule.fields[array[0]],
-        gameModule.fields[array[1]],
-        gameModule.fields[array[2]],
+        gameModule.getFields()[array[0]],
+        gameModule.getFields()[array[1]],
+        gameModule.getFields()[array[2]],
       ];
       lines.push(line);
     }
@@ -248,9 +251,9 @@ const aiModule = (function () {
     const lines = [];
     for (const array of gameModule.wins) {
       const line = [
-        gameModule.fields[array[0]],
-        gameModule.fields[array[1]],
-        gameModule.fields[array[2]],
+        gameModule.getFields()[array[0]],
+        gameModule.getFields()[array[1]],
+        gameModule.getFields()[array[2]],
       ];
       lines.push(line);
     }
@@ -260,7 +263,7 @@ const aiModule = (function () {
   }
 
   function makeMove() {
-    const field = gameModule.fields[levelEasy()];
+    const field = gameModule.getFields()[levelEasy()];
     gameModule.makeMove.call(field);
   }
 
@@ -269,7 +272,7 @@ const aiModule = (function () {
     if (field) {
       gameModule.makeMove.call(field);
       return;
-    } else field = gameModule.fields[levelEasy()];
+    } else field = gameModule.getFields()[levelEasy()];
     gameModule.makeMove.call(field);
     return;
   }
@@ -296,7 +299,7 @@ const aiModule = (function () {
   }
 
   function makeMoveHard() {
-    const fields = gameModule.fields;
+    const fields = gameModule.getFields();
     const emptyFields = getEmptyFields();
     if (levelAverage()) {
       return gameModule.makeMove.call(levelAverage());
@@ -336,17 +339,21 @@ const aiModule = (function () {
     } else if (
       !levelHard(gameModule.returnSign(), gameModule.returnSignEnemy())
     ) {
-      return gameModule.makeMove.call(gameModule.fields[levelEasy()]);
+      return gameModule.makeMove.call(gameModule.getFields()[levelEasy()]);
     } else
       return gameModule.makeMove.call(
         levelHard(gameModule.returnSign(), gameModule.returnSignEnemy())
       );
   }
-  return { makeMove, makeMoveAverage, makeMoveHard };
+  return { getEmptyFields, makeMove, makeMoveAverage, makeMoveHard };
 })();
 
 const gameModule = (function () {
-  const fields = Array.from(document.querySelectorAll('.field'));
+  function getFields() {
+    const fields = Array.from(document.querySelectorAll('.field'));
+    return fields;
+  }
+
   const wins = [
     [0, 1, 2],
     [3, 4, 5],
@@ -360,6 +367,7 @@ const gameModule = (function () {
   function checkWin() {
     let win = false;
     const winCondition = [returnSign(), returnSign(), returnSign()];
+    const fields = getFields();
     const values = fields.map((e) => {
       return e.innerHTML;
     });
@@ -418,13 +426,8 @@ const gameModule = (function () {
     } else mainModule.toggleTurn();
   }
 
-  for (field of fields) {
-    field.addEventListener('click', makeMove);
-    field.classList.add('fieldActive');
-  }
-
   return {
-    fields,
+    getFields,
     returnSign,
     returnSignEnemy,
     checkWin,
