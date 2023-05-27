@@ -1,6 +1,11 @@
 const mainModule = (function () {
   let player1 = {};
   let player2 = {};
+  let block = false;
+
+  function blockPlayer() {
+    return block;
+  }
 
   const addPlayerButtons = document.querySelectorAll('.addPlayer');
   addPlayerButtons.forEach((button) => {
@@ -32,12 +37,18 @@ const mainModule = (function () {
   function startGame() {
     const fields = gameModule.getFields();
     for (const field of fields) {
-      field.addEventListener('click', gameModule.makeMove);
+      field.addEventListener('click', gameModule.makePlayerMover);
       field.classList.add('fieldActive');
     }
     this.innerHTML = 'Replay!';
     this.removeEventListener('click', startGame);
     this.addEventListener('click', replay);
+    const players = [player1, player2];
+    for (const player of players) {
+      if (player.turn === true && player.level !== 'human') {
+        block = true;
+      } else block = false;
+    }
 
     checkForAi();
   }
@@ -58,8 +69,14 @@ const mainModule = (function () {
     for (let i = 0; i < 9; i++) {
       const field = document.createElement('div');
       field.classList.add('field', 'fieldActive');
-      field.addEventListener('click', gameModule.makeMove);
+      field.addEventListener('click', gameModule.makePlayerMover);
       board.appendChild(field);
+    }
+
+    for (const player of players) {
+      if (player.turn === true && player.level !== 'human') {
+        block = true;
+      } else block = false;
     }
 
     setTimeout(checkForAi, 1000);
@@ -121,6 +138,12 @@ const mainModule = (function () {
     fieldset.forEach((f) => {
       f.classList.toggle('itsYourTurn');
     });
+    const players = [player1, player2];
+    for (const player of players) {
+      if (player.turn === true && player.level !== 'human') {
+        block = true;
+      } else block = false;
+    }
     setTimeout(checkForAi, 1000);
   }
 
@@ -131,6 +154,7 @@ const mainModule = (function () {
   return {
     players,
     toggleTurn,
+    blockPlayer,
   };
 })();
 
@@ -418,12 +442,6 @@ const gameModule = (function () {
   }
 
   function makeMove() {
-
-    // const players = mainModule.players();
-    // for (const player of players) {
-    //   if (player.turn === true && player.level !== 'human') return;
-    // }
-    
     this.innerHTML = returnSign();
     this.classList.remove('fieldActive');
     this.removeEventListener('click', makeMove);
@@ -431,6 +449,11 @@ const gameModule = (function () {
     if (checkWin() === true) {
       displayWinner();
     } else mainModule.toggleTurn();
+  }
+
+  function makePlayerMover() {
+    if (mainModule.blockPlayer()) return;
+    else makeMove.call(this);
   }
 
   return {
@@ -442,5 +465,6 @@ const gameModule = (function () {
     makeMove,
     wins,
     displayDraw,
+    makePlayerMover,
   };
 })();
